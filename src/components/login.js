@@ -1,97 +1,53 @@
-import { useState } from "react";
-import axiosInstance from "./axios"; // Import the axios instance (configured with interceptors)
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const navigate = useNavigate(); // Hook for navigation
-  
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const [message, setMessage] = useState(""); // Message for success or errors
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  // Handle input changes
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value, // Dynamically update form data
-    });
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/token/', {
+        email,
+        password,
+      });
+
+      // Save tokens to localStorage or cookies
+      localStorage.setItem('access_token', response.data.access);
+      localStorage.setItem('refresh_token', response.data.refresh);
+
+      // Redirect to a dashboard or home page
+      navigate('/');
+    } catch (err) {
+      setError('Invalid credentials. Please try again.');
+    }
   };
 
-  // Handle form submission
- const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  // Validation
-  if (!formData.email || !formData.password) {
-    setMessage("Both fields are required.");
-    return;
-  }
-
-  try {
-    // Send POST request to login API
-    const response = await axiosInstance.post("token/", {
-      email: formData.email,
-      password: formData.password,
-    });
-
-    // Check if the response contains the access token
-    if (response.data && response.data.access_token) {
-      // Store the JWT token in localStorage
-      localStorage.setItem("access_token", response.data.access_token);
-      sessionStorage.setItem("access_token", response.data.access_token);
-
-      // Success message and redirect
-      setMessage("Login successful!");
-      navigate("/");  // Redirect to the homepage or another protected route
-    } else {
-      setMessage("Login failed. Please try again.");
-    }
-  } catch (error) {
-    console.error("Login failed:", error);
-
-    // Log the error response to see the full error data
-    if (error.response) {
-      console.error("Error response data:", error.response.data);
-      console.error("Error status:", error.response.status);
-      setMessage(error.response.data.detail || "Login failed. Please try again.");
-    } else if (error.request) {
-      console.error("Error request:", error.request);
-      setMessage("No response received from the server. Please check your connection.");
-    } else {
-      console.error("Error message:", error.message);
-      setMessage("An unexpected error occurred. Please try again later.");
-    }
-  }
-};
-
-
   return (
-    <div>
+    <div className="login-container">
       <h2>Login</h2>
-      {message && <p>{message}</p>} {/* Display success/error message */}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <div>
-          <label htmlFor="email">Email:</label>
+          <label>Email:</label>
           <input
             type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label>Password:</label>
           <input
             type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
