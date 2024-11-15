@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 // import './css/posts.css'
 
 const Posts = () => {
+
   const [posts, setPosts] = useState([]);
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const getPosts = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/");
+      const token = localStorage.getItem("access_token"); 
+      console.log(token);
+      
+
+      const response = await fetch("http://127.0.0.1:8000/api/",{
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
       if (!response.ok) {
         throw new Error("resposnse was not Ok");
       }
@@ -38,7 +48,7 @@ const Posts = () => {
             <div className="col-7 mb-4" key={index}> {/* Full width for each card */}
               <div className="card" style={{ width: '100%', height: 'auto', padding: '1rem' }}>
                 <div className="card-body" style={{ height: '100%' }}>
-                  <h5 className="card-title">{post.title}</h5>
+                  <Link to={`post/${post.slug}`} className="card-title">{post.title}</Link>
                   <p className="card-text">{post.content}</p>
                 
                 </div>
