@@ -10,7 +10,7 @@ const SinglePost = () => {
   const getPost = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`http://127.0.0.1:8000/api/${slug}`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/posts/?slug=${slug}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -21,7 +21,11 @@ const SinglePost = () => {
       }
 
       const data = await response.json(); // Await the JSON parsing
-      setPost(data);
+      if (data.length > 0) {
+        setPost(data[0]); // Get the first post if found
+      } else {
+        setError("Post not found");
+      }
     } catch (err) {
       setError(err.message);
     } finally {
