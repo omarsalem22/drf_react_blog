@@ -33,7 +33,7 @@ const navigate = useNavigate();
           author: 1,
           excerpt: formData.excerpt,
           content: formData.content,
-          // slug: formData.title.toLowerCase().replace(/ /g, "-"), 
+        
           published: new Date().toISOString(),
         },
         {
@@ -87,7 +87,7 @@ const navigate = useNavigate();
             name="content"
             value={formData.content}
             onChange={handleChange}
-            rows="5"
+            rows="6"
           />
         </div>
         <button type="submit" className="btn btn-primary">

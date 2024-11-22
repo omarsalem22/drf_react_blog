@@ -9,6 +9,8 @@ import SinglePost from "./components/SinglePost";
 import Search from "./components/search";
 import AdminPosts from "./components/admin";
 import CreatePost from "./components/admin/create";
+import EditPost from "./components/admin/editPost";
+import DeletePost from "./components/admin/delete";
 function App() {
   return (
     <div className="App">
@@ -24,6 +26,10 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/admin" element={<AdminPosts />} />
         <Route path="/admin/create" element={<CreatePost/>} />
+        <Route path="/admin/edit/:id" element={<EditPost/>} />
+        <Route path="/admin/delete/:id" element={<DeletePost/>} />
+
+
 
 
 

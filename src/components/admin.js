@@ -51,19 +51,23 @@ const AdminPosts = () => {
             <td>{post.category}</td>
             <td>{post.title}</td>
             <td>
-              <button
+              <Link
                 className="btn btn-danger btn-sm"
                 style={{ marginRight: "10px" }}
+                to={`/admin/delete/${post.id}`}
+
                 // onClick={() => deletePost(post.id)}
               >
                 Delete
-              </button>
-              <button
+              </Link>
+              <Link
                 className="btn btn-primary btn-sm"
+                to={`/admin/edit/${post.id}`}
+
                 // onClick={() => updatePost(post.id)}
               >
                 Update
-              </button>
+              </Link>
             </td>
           </tr>
         ))}
