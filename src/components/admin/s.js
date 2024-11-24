@@ -10,6 +10,7 @@ const EditPost = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ title: "", excerpt: "", content: "" });
   const [formImage, setFormImage] = useState(null);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -25,7 +26,10 @@ const EditPost = () => {
         return;
       }
 
+      
       const response = await axios.get(`${API_BASE_URL}/detail/${id}/`, {
+        "Content-Type": "multipart/form-data", 
+
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -38,18 +42,40 @@ const EditPost = () => {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "image" && files.length > 0) {
-      setFormImage(files[0]);
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: value.trim(),
-      }));
-    }
-  };
+  // const handleChange = (e) => {
+  //   const { name, value, files } = e.target;
 
+  //   if (name === "image" && files.length > 0) {
+  //     setFormImage(files[0]); 
+  //   } else {
+  //     setFormData({
+  //       ...formData,
+  //       [name]: value.trim(),
+  //     });
+  //   }
+  // };
+
+  const handleChange = (e) => {
+    const { name, value ,files } = e.target;
+    if (name === "image" && files.length > 0) {
+      setFormImage(files[0]); 
+    } else {
+  
+    setFormData((prevFormData) => {
+      const updatedFormData = { 
+        ...prevFormData, 
+        [name]: value 
+ };
+  
+      // Update slug if the title changes
+      if (name === "title") {
+        updatedFormData.slug = value.trim().toLowerCase().replace(/\s+/g, "-");
+      }
+  
+      return updatedFormData;
+    });
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title || !formData.content) {
@@ -64,22 +90,13 @@ const EditPost = () => {
         console.warn("No access token found");
         return;
       }
+   
+      
+  
+      await axios.put(`${API_BASE_URL}/edit/${id}/`, formData, {
+        "Content-Type": "multipart/form-data", 
 
-      const updatedData = new FormData();
-      updatedData.append("title", formData.title);
-      updatedData.append("excerpt", formData.excerpt);
-      updatedData.append("content", formData.content);
-      updatedData.append("author", 1); 
-
-      if (formImage) {
-        updatedData.append("image", formImage);
-      }
-
-      await axios.put(`${API_BASE_URL}/edit/${id}/`, updatedData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       alert("Post updated successfully!");
@@ -113,7 +130,9 @@ const EditPost = () => {
           <textarea className="form-control" name="content" value={formData.content} onChange={handleChange} rows="6" />
         </div>
         <div className="mb-3">
-          <label htmlFor="image" className="form-label">Upload Image</label>
+          <label htmlFor="image" className="form-label">
+            Upload Image
+          </label>
           <input
             type="file"
             className="form-control"
@@ -122,12 +141,10 @@ const EditPost = () => {
             accept="image/*"
           />
         </div>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? "Submitting..." : "Submit"}
-        </button>
+        <button type="submit" className="btn btn-primary">Submit</button>
       </form>
     </>
   );
-};
+}};
 
 export default EditPost;

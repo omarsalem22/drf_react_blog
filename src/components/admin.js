@@ -33,60 +33,69 @@ const AdminPosts = () => {
   if (loading) return <p>Loading</p>;
 
   if (errors) return <p>Error.. {errors}</p>;
+
+  if (!posts.length) return <> <h1>No posts yet </h1>
+      <Link
+          to={"/admin/create"}
+          className="btn btn-success btn-lg"
+          // onClick={() => handleAddPost()}
+        >
+          Add Post
+        </Link>
+  
+  </>;
+  
   return (
     <div className="container my-4">
-    <table className="table">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Category</th>
-          <th scope="col">Title</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {posts.map((post) => (
-          <tr key={post.id}>
-            <th scope="row">{post.id}</th>
-            <td>{post.category}</td>
-            <td>{post.title}</td>
-            <td>
-              <Link
-                className="btn btn-danger btn-sm"
-                style={{ marginRight: "10px" }}
-                to={`/admin/delete/${post.id}`}
-
-                // onClick={() => deletePost(post.id)}
-              >
-                Delete
-              </Link>
-              <Link
-                className="btn btn-primary btn-sm"
-                to={`/admin/edit/${post.id}`}
-
-                // onClick={() => updatePost(post.id)}
-              >
-                Update
-              </Link>
-            </td>
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Category</th>
+            <th scope="col">Title</th>
+            <th scope="col">Actions</th>
           </tr>
-        ))}
-        
-      </tbody>
-    </table>
-  
-  
-    <div className="d-flex justify-content-end mt0  ">
-      <Link
-      to={'/admin/create'}
-        className="btn btn-success btn-lg"
-        // onClick={() => handleAddPost()}
-      >
-           Add Post
-      </Link>
+        </thead>
+        <tbody>
+          {posts.map((post) => (
+            <tr key={post.id}>
+              <th scope="row">{post.id}</th>
+              <td>{post.category}</td>
+              <td>{post.title}</td>
+              <td>
+                <Link
+                  className="btn btn-danger btn-sm"
+                  style={{ marginRight: "10px" }}
+                  to={`/admin/delete/${post.id}`}
+
+                  // onClick={() => deletePost(post.id)}
+                >
+                  Delete
+                </Link>
+                <Link
+                  className="btn btn-primary btn-sm"
+                  to={`/admin/edit/${post.id}`}
+
+                  // onClick={() => updatePost(post.id)}
+                >
+                  Update
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="d-flex justify-content-end mt0  ">
+        <Link
+          to={"/admin/create"}
+          className="btn btn-success btn-lg"
+          // onClick={() => handleAddPost()}
+        >
+          Add Post
+        </Link>
+      </div>
     </div>
-  </div>
-  
   );
 };
 
